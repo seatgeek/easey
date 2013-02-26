@@ -97,7 +97,6 @@
             easey().map(map)
             .to(map.pointCoordinate(tap).zoomTo(map.getZoom() + 1))
             .path('about').run(200, function() {
-                map.dispatchCallback('zoomed');
                 clearLocations();
             });
         }
@@ -234,9 +233,7 @@
             // use shift-double-click to zoom out
             easey().map(map)
                 .to(map.pointCoordinate(MM.getMousePoint(e, map)).zoomTo(z))
-                .path('about').run(100, function() {
-                map.dispatchCallback('zoomed');
-            });
+                .path('about').run(100);
             return MM.cancelEvent(e);
         }
 
@@ -276,17 +273,13 @@
             // limit mousewheeling to once every 200ms
             var timeSince = new Date().getTime() - prevTime;
 
-            function dispatchZoomed() {
-                map.dispatchCallback('zoomed');
-            }
-
             if (!ea.running()) {
               var point = MM.getMousePoint(e, map),
                   z = map.getZoom();
               ea.map(map)
                 .easing('easeOut')
                 .to(map.pointCoordinate(MM.getMousePoint(e, map)).zoomTo(z + (delta > 0 ? 1 : -1)))
-                .path('about').run(100, dispatchZoomed);
+                .path('about').run(100);
                 prevTime = new Date().getTime();
             } else if (timeSince > 150){
                 ea.zoom(ea.to().zoom + (delta > 0 ? 1 : -1)).from(map.coordinate).resetRun();
